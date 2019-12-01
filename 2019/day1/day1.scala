@@ -1,10 +1,14 @@
 
-// Examples in decsription
-def checkSamples(f : Long => Long) = {
-  Seq(12,14,1969,100756)
-       .map(m => (m, f(m)))
-       .map({ case (m,f) => s"Fuel required for mass $m is $f." })
-       .foreach(println(_))
+// Examples in description
+val checkSamples = checkAnswers(Seq(12,14,1969,100756)) _
+
+def checkAnswers(input : Seq[Long])(f : Long => Long, answers : Seq[Long]) = {
+  input
+    .zip(answers)
+    .map(m => (m._1, f(m._1), m._2))
+    .filter(x => x._2 != x._3)
+    .map({ case (m,f,a) => s"Fuel required for mass $m is $a but got $f." })
+    .foreach(println(_))
 }
 
 def runTest(f : Long => Long) : Long = {
@@ -18,12 +22,10 @@ def runTest(f : Long => Long) : Long = {
 }
 
 // Part 1
-def fuelRequired(mass : Long) : Long = {
-  mass / 3 - 2
-}
+def fuelRequired(mass : Long) : Long = mass / 3 - 2
 
 // Check we're heading in the right direction
-checkSamples(fuelRequired)
+checkSamples(fuelRequired, Seq(2,2,654,33583))
 
 // All requirements (part 1)
 val totalFuel = runTest(fuelRequired)
@@ -41,7 +43,7 @@ def fuelRequredForFuel(fuel : Long) : Long = {
 }
 
 // Examples in description
-checkSamples(fuelRequredForFuel)
+checkSamples(fuelRequredForFuel, Seq(2, 2, 966, 50346))
 
 // All requiements (part 2)
 val totalFuel2 = runTest(fuelRequredForFuel)
