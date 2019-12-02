@@ -4,24 +4,51 @@ def convertToList(input : String) : Array[Int] = input.split(",").map(_.toInt)
 // ---------
 // Part 1
 def runCalculation(input : Array[Int]) : Array[Int] = {
-  import scala.collection.mutable.ArrayBuffer
+  var memory = new VirtualMachine(input.toBuffer)
+  while (memory.step) {}
+  memory.allMemory
+}
 
-  var memory = input.toBuffer
+import scala.collection.mutable.Buffer
 
+class VirtualMachine(memory : Buffer[Int]) {
   var pc = 0
-  while (memory(pc) != 99) {
-    val arg1 = memory(memory(pc + 1))
-    val arg2 = memory(memory(pc + 2))
-    val fn = memory(pc) match {
-      case 1 => (arg1 : Int, arg2 : Int) => arg1 + arg2
-      case 2 => (arg1 : Int, arg2 : Int) => arg1 * arg2
-      case _ => (arg1 : Int, arg2 : Int) => -1
-    }
-  
-    memory(memory(pc + 3)) = fn(arg1, arg2)
-    pc += 4
+
+  def incPC(inc : Int = 1) : Unit = pc += inc
+
+  def offsetValue(offset : Int) : Int = memory(pc + offset)
+
+  def value(address : Int) : Int = memory(address)
+
+  def setValue(address : Int, value : Int) : Unit = memory(address) = value
+
+  def allMemory() : Array[Int] = memory.toArray[Int]
+
+  def print() : Unit = println(memory.mkString(","))
+
+  def step() : Boolean = opcode(offsetValue(0))()
+
+  val opcode = Instructions.values.toList.map(x => (x.opcode, x.code)).toMap
+
+  object Instructions extends Enumeration {
+    protected case class Val(opcode : Int, code : () => Boolean) extends super.Val 
+
+    import scala.language.implicitConversions
+    implicit def valueToInstructionVal(x: Value): Val = x.asInstanceOf[Val]
+
+    val Add = Val(1, () => {
+      setValue(offsetValue(3), value(offsetValue(1)) + value(offsetValue(2)))
+      incPC(4)
+      true
+    })
+    val Multiply = Val(2, () => {
+      setValue(offsetValue(3), value(offsetValue(1)) * value(offsetValue(2)))
+      incPC(4)
+      true
+    })
+    val Halt = Val(99, () => false)
   }
-  memory.toArray[Int]
+
 }
 
 // Test data
