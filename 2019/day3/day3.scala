@@ -14,24 +14,27 @@ object Direction extends Enumeration {
     type Direction = Value
     val U, D, R, L = Value
 }
-case class Vector (direction : Direction.Value, distance : Int)
 
-def parsePath(path : String) : Array[Vector] = {
-    path.split(",").map(d => {
-        val direction = d.charAt(0) match {
-            case 'R' => Direction.R
-            case 'L' => Direction.L
-            case 'U' => Direction.U
-            case 'D' => Direction.D
-        }
-        val distance = d.substring(1).toInt
-        Vector(direction, distance)
-    })
+case class WireVector (direction : Direction.Value, distance : Int)
+
+object WireVector {
+    def apply(text : String) = {
+        val direction = text.charAt(0) match {
+                    case 'R' => Direction.R
+                    case 'L' => Direction.L
+                    case 'U' => Direction.U
+                    case 'D' => Direction.D
+                }
+        val distance = text.substring(1).toInt
+        new WireVector(direction, distance)
+    }
 }
+
+def parsePath(path : String) : Array[WireVector] = path.split(",").map(WireVector(_))
 
 import scala.collection.mutable.HashMap
 
-def generateLocationMap(path : Array[Vector]) : HashMap[(Int,Int),Int] = {
+def generateLocationMap(path : Array[WireVector]) : HashMap[(Int,Int),Int] = {
     val map = HashMap[(Int,Int), Int]()
     var location = (0,0)
     var totalDistance = 0
@@ -61,13 +64,11 @@ def calculateDistance(p1 : String, p2 : String, calculation : Calculation.Value)
   val path2 = parsePath(p2)
   val map1 = generateLocationMap(path1)
   val map2 = generateLocationMap(path2)
-  // FIXME: can't get the type signatures right for this... works but ugly :(
-  val f = calculation match {
-      case Calculation.Manhattan => x : (Int,Int) => x match { case (x, y) =>  math.abs(x) + math.abs(y) }
-      case Calculation.Shortest => x : (Int,Int)  => map1(x) + map2(x)
-  }
   map1.keys.toSet.intersect(map2.keys.toSet)
-         .map(f)
+         .map(calculation match {
+            case Calculation.Manhattan => { case (x, y) =>  math.abs(x) + math.abs(y) }
+            case Calculation.Shortest => x  => map1(x) + map2(x)
+          })
          .min
 }
 
