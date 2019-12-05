@@ -43,9 +43,6 @@ class VirtualMachine(memory : Buffer[Int]) {
         println()
         c += parameters(instruction) + 1
       }
-      println (s"223 ${memory(223)}")
-      println (s"224 ${memory(224)}")
-      println (s"225 ${memory(225)}")
   }
 
   object ParameterMode extends Enumeration {
@@ -113,11 +110,40 @@ class VirtualMachine(memory : Buffer[Int]) {
     })
     val IntegerOutput = Val(4, 1, (p) => {
         println("Diagnostic: " + value(pc + 1, p(0)) + " @ memory: " + pc)
-            // printCommands
-        // if (value(pc + 1, p(0)) != 0) {
-        //     System.exit(1)
-        // }
         true
+    })
+    val JumpIfTrue = Val(5, 2, (p) => {
+        if (value(pc + 1, p(0)) != 0) {
+            // PC will be incremented by 3 on returm
+            pc = value(pc + 2, p(1)) - 3
+        }
+        true
+    })
+    val JumpIfFalse = Val(6,2, (p) => {
+        if (value(pc + 1, p(0)) == 0) {
+            pc = value(pc + 2, p(1)) - 3
+        }
+        true
+    })
+    val LessThan = Val(7, 3, (p) => {
+        setValue(value(pc + 3, ParameterMode.Immediate),
+          if (value(pc + 1, p(0)) < value(pc + 2, p(1))) {
+            1
+          }
+          else {
+              0
+          })
+          true
+    })
+    val Equals = Val(8, 3, (p) => {
+        setValue(value(pc + 3, ParameterMode.Immediate),
+          if (value(pc + 1, p(0)) == value(pc + 2, p(1))) {
+            1
+          }
+          else {
+              0
+          })
+          true
     })
     val Halt = Val(99, 0, (p) => false)
   }
@@ -136,7 +162,6 @@ val testData = Seq(
 
 // Examples
 testData.foreach({ case (i,o) =>
-println("---")
 println(s"Running: $i")
   val input = convertToList(i)
   val expected = convertToList(o)
@@ -159,18 +184,12 @@ var program = convertToList(input1)
 println("Part 1")
 println(runCalculation(program)(0))
 
-// not 223
 
-/*
-// Part 2
-println()
-println("Part 2")
-for (noun <- 0 to 99; verb <- 0 to 99) {
-  program(1) = noun
-  program(2) = verb
-  if (runCalculation(program.toArray)(0) == 19690720) {
-    println ("Noun: " + noun)
-    println ("Verb: " + verb)
-  }
-}
-*/
+// Part2
+// Seq("3,9,8,9,10,9,4,9,99,-1,8","3,9,7,9,10,9,4,9,99,-1,8","3,3,1108,-1,8,3,4,3,99", "3,3,1107,-1,8,3,4,3,99")
+
+Seq("3,21,1008,21,8,20,1005,20,22,107,8,21,20,1006,20,31,1106,0,36,98,0,0,1002,21,125,20,4,20,1105,1,46,104,999,1105,1,46,1101,1000,1,20,4,20,1105,1,46,98,99")
+  .foreach( x => {
+      val z = convertToList(x)
+runCalculation(z)
+  })
