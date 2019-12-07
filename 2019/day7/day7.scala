@@ -1,19 +1,22 @@
 
 
 import scala.collection.mutable.Buffer
+import scala.collection.mutable.ArrayBuffer
 
-class VirtualMachine(memory : Buffer[Int], inputQueue : Seq[Int] = Seq[Int]()) {
+class VirtualMachine(memory : Buffer[Int]) {
   import scala.collection.mutable.ListBuffer
 
-  def runCalculation() : Seq[Int] = {
+  def runCalculation(stopOnOutput : Boolean = false) : Seq[Int] = {
     // var memory = new VirtualMachine(input.toBuffer)
-    while (step) {}
+    while (step && (!stopOnOutput || (stopOnOutput && outputQueue.size == 0))) {}
     // allMemory
-    outputQueue.toSeq
+    val retv = outputQueue.toSeq
+    outputQueue.clear
+    retv
   }
 
   val outputQueue = ListBuffer[Int]()
-  var inputQueueTop = 0
+  val inputQueue = ArrayBuffer[Int]()
 
   var pc = 0
 
@@ -93,8 +96,8 @@ class VirtualMachine(memory : Buffer[Int], inputQueue : Seq[Int] = Seq[Int]()) {
     })
     val IntegerInput = Val(3, 1, (p) => {
         // println("Enter integer: ")
-        val num = inputQueue(inputQueueTop)
-        inputQueueTop += 1
+        val num = inputQueue.head
+        inputQueue.remove(0)
         setValue(value(pc + 1, ParameterMode.Immediate), num)
         true
     })
@@ -152,13 +155,14 @@ val testData = Seq(
 def performRun(code : Array[Int], inputPhases : Seq[Int]) : Int = {
   var input = 0
   inputPhases.foreach(p => {
-    val vm = new VirtualMachine(code.toBuffer, Seq(p,input))
-    input = vm.runCalculation.head
+    val vm = new VirtualMachine(code.toBuffer)
+    vm.inputQueue.append(p)
+    vm.inputQueue.append(input)
+    input = vm.runCalculation().head
   })
   input
 }
 
-import scala.collection.mutable.ArrayBuffer
 val permutations = ArrayBuffer[Seq[Int]]()
 heapPermutations(Buffer(0,1,2,3,4), 5)
 
@@ -191,6 +195,67 @@ val input1 = try inputFile
              finally inputFile.close()
 println("Part1:")
 println(checkPermutations(input1))
+
+// Part 2
+println()
+println ("Part 2")
+permutations.clear
+heapPermutations(Buffer(5,6,7,8,9), 5)
+
+val testData2 = Seq (
+    ("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5", "139629729"),
+    ("3,52,1001,52,-5,52,3,53,1,52,56,54,1007,54,5,55,1005,55,26,1001,54,-5,54,1105,1,12,1,53,54,53,1008,54,0,55,1001,55,1,55,2,53,55,53,4,53,1001,56,-1,56,1005,56,6,99,0,0,0,0,10","18216")
+)
+
+testData2.foreach({ case (i,o) => {
+    val bestResult = checkPermutations2(i)
+    if (bestResult.toString != o) {
+        println(s"Expecting $o but got $bestResult for $i")
+    }
+}})
+println(checkPermutations2(input1))
+
+def checkPermutations2(c : String) : Int = {
+    val code = convertToList(c)
+    var bestResult = 0
+    var bestInput = Seq[Int]()
+    permutations.foreach (input => {
+      val a = performRun2(code, input)
+      if (a > bestResult) {
+          bestResult = a
+          bestInput = input
+      }
+    })
+    bestResult
+}
+
+def performRun2(code : Array[Int], inputPhases : Seq[Int]) : Int = {
+  val vms = for (i <- 0 until 5) yield {
+      val retv = new VirtualMachine(code.toBuffer)
+      retv.inputQueue.append(inputPhases(i))
+      retv
+    }
+  
+  var input : Option[Int] = Some(0)
+  var currentVM = 0
+  var numFinished = 0
+  while (numFinished < 5) {
+      val vm = vms(currentVM)
+    //   println (s"CurrentVM: $currentVM Input: $input")
+      vm.inputQueue.append(input.getOrElse(0))
+      val calc = vm.runCalculation(true)
+    //   println(s"Calc: $calc")
+      if (calc.size > 0) {
+          input = Some(calc.head)
+      }
+      else {
+          numFinished += 1
+      }
+      currentVM = (currentVM + 1) % inputPhases.size
+  }
+  input.getOrElse(-1)
+}
+
 
 // I know Scala has a built-in permutations method, but I wanted to
 // implement my own
