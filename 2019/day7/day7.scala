@@ -164,7 +164,7 @@ def performRun(code : Array[Int], inputPhases : Seq[Int]) : Int = {
 }
 
 val permutations = ArrayBuffer[Seq[Int]]()
-heapPermutations(Buffer(0,1,2,3,4), 5)
+Buffer(0,1,2,3,4).heapPermutations(permutations)
 
 def checkPermutations(c : String) : Int = {
     val code = convertToList(c)
@@ -200,7 +200,7 @@ println(checkPermutations(input1))
 println()
 println ("Part 2")
 permutations.clear
-heapPermutations(Buffer(5,6,7,8,9), 5)
+Buffer(5,6,7,8,9).heapPermutations(permutations)
 
 val testData2 = Seq (
     ("3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,0,0,5", "139629729"),
@@ -260,13 +260,14 @@ def performRun2(code : Array[Int], inputPhases : Seq[Int]) : Int = {
 // I know Scala has a built-in permutations method, but I wanted to
 // implement my own
 // https://en.wikipedia.org/wiki/Heap%27s_algorithm
-def heapPermutations(a : Buffer[Int], size : Int) : Unit = {
+implicit class BufferUtils(a : Buffer[Int]) {
+  def heapPermutations( p : ArrayBuffer[Seq[Int]], size : Int = a.size) : Unit = {
     if (size == 1) {
         permutations += a.toSeq
     }
     // val input = a.toBuffer
     for (i <- 0 until size) {
-        heapPermutations(a, size - 1)
+        heapPermutations(p, size - 1)
 
         if ((size % 2) == 1) {
             val temp = a(0)
@@ -279,4 +280,5 @@ def heapPermutations(a : Buffer[Int], size : Int) : Unit = {
             a(size-1) = temp
         }
     }
+  }
 }
