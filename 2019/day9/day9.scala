@@ -4,6 +4,8 @@ import scala.collection.mutable.ArrayBuffer
 class VirtualMachine(memory : Buffer[Long]) {
   import scala.collection.mutable.ListBuffer
 
+  def this(input : String) = this(input.split(",").map(_.toLong).toBuffer)
+
   def runCalculation(stopOnOutput : Boolean = false) : Seq[Long] = {
     // var memory = new VirtualMachine(input.toBuffer)
     while (step && (!stopOnOutput || (stopOnOutput && outputQueue.size == 0))) {}
@@ -29,10 +31,19 @@ class VirtualMachine(memory : Buffer[Long]) {
       }
   }
   def value(address : Int, mode : ParameterMode.Value = ParameterMode.Position) : Long = {
-      memory(mapAddress(address,mode))
+      val addr = mapAddress(address,mode)
+      if (addr >= memory.size) {
+          memory.padToInPlace(addr + 10, 0)
+      }
+      memory(addr)
   }
 
-  def setValue(address : Int, value : Long) : Unit = memory(address) = value
+  def setValue(address : Int, value : Long) : Unit = {
+      if (address >= memory.size) {
+          memory.padToInPlace(address + 10, 0)
+      }
+      memory(address) = value
+    }
 
   def allMemory() : Array[Long] = memory.toArray[Long]
 
@@ -150,8 +161,6 @@ class VirtualMachine(memory : Buffer[Long]) {
 
 }
 
-def convertToList(input : String) : Array[Long] = input.split(",").map(_.toLong)
-
 val testData = Seq(
     ("109,1,204,-1,1001,100,1,100,1008,100,16,101,1006,101,0,99",""),
     ("1102,34915192,34915192,7,4,7,99,0",""),
@@ -160,7 +169,7 @@ val testData = Seq(
 
 testData.foreach({
     case(i,o) =>
-      val vm = new VirtualMachine(convertToList(i).toBuffer.padTo(2000,0))
+      val vm = new VirtualMachine(i)
       println(vm.runCalculation())
 })
 
@@ -171,11 +180,11 @@ val input1 = try inputFile
                    .next
              finally inputFile.close()
 println("Part 1:")
-val vm = new VirtualMachine(convertToList(input1).toBuffer.padTo(2000,0))
+val vm = new VirtualMachine(input1)
 vm.inputQueue.append(1)
 println(vm.runCalculation())
 
 println("Part 2:")
-val vm2 = new VirtualMachine(convertToList(input1).toBuffer.padTo(2000,0))
+val vm2 = new VirtualMachine(input1)
 vm2.inputQueue.append(2)
 println(vm2.runCalculation())
