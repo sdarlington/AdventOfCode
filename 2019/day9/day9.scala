@@ -170,7 +170,12 @@ val input1 = try inputFile
                    .getLines
                    .next
              finally inputFile.close()
-println("Part1:")
+println("Part 1:")
 val vm = new VirtualMachine(convertToList(input1).toBuffer.padTo(2000,0))
 vm.inputQueue.append(1)
 println(vm.runCalculation())
+
+println("Part 2:")
+val vm2 = new VirtualMachine(convertToList(input1).toBuffer.padTo(2000,0))
+vm2.inputQueue.append(2)
+println(vm2.runCalculation())
