@@ -160,32 +160,3 @@ class VirtualMachine(memory : Buffer[Long]) {
   }
 
 }
-
-// Part 1
-import scala.collection.mutable.HashMap
-
-val inputFile = io.Source.fromFile("input.txt")
-val input1 = try inputFile
-                   .getLines
-                   .next
-             finally inputFile.close()
-println("Part 1:")
-val vm = new VirtualMachine(input1)
-
-val output = vm.runCalculation()
-var list = output.map(_.toInt)
-val screen = HashMap[(Int,Int),Int]()
-while (!list.isEmpty) {
-    list match {
-        case x :: y :: z :: ls => {
-            screen((x,y)) = z
-            list = ls
-        }
-    }
-}
-
-println(screen.values.filter(_ == 2).size)
-
-println("Part 2")
-val vm2 = new VirtualMachine(input1)
-vm2.memory(0) = 2

@@ -1,6 +1,6 @@
 
 
-val testData = Seq("example1.txt","example2.txt","example3.txt")
+val testData = Seq("example1.txt","example2.txt","example3.txt","example4.txt")
 
 import scala.collection.mutable.TreeSet
 def readMap(map : Seq[String]) : TreeSet[(Int,Int)] = {
@@ -82,7 +82,7 @@ testData.foreach(x => {
              finally inputFile.close()
 
   val asteroids = readMap(input1)
-  checkMap(asteroids)
+//   checkMap(asteroids)
 })
 
 // Part 1
@@ -94,4 +94,53 @@ println("Part 1")
              finally inputFile.close()
 
   val asteroids = readMap(input1)
-  checkMap(asteroids)
+//   checkMap(asteroids)
+
+println("Part 2")
+val station = (22,19)
+val targets = asteroids &~ TreeSet(station)
+
+import scala.collection.mutable.ListBuffer
+val angles = targets.toList.map({ case (x,y) => 
+                  val dx = x - station._1
+                  val dy = y - station._2
+
+                  val len = dx*dx + dy*dx
+
+                  var angle = math.toDegrees(math.atan2(dx, dy)) - 90.0
+                  if (angle < 0) {
+                      angle += 360.0
+                  }
+                // var angle = math.atan2(dy, dx)
+
+                  (angle,len,(x,y))
+                })
+                .sortWith((x,y) => { if (x._1 == y._1) { x._2 < y._2 } else { x._1 < y._1 } })
+                // .toBuffer
+// println (angles)
+// println (angles.head)
+// println (angles.last)
+
+// var angleSet = TreeSet[(Double,Int,(Int,Int))]() &~ angles
+// angleSet += angles
+var zapped = TreeSet[(Int,Int)]()
+while (zapped.size < angles.size){
+    var lastZapped = -1.0
+    angles.foreach({ case (a,d,c) =>
+        if (!zapped.contains(c)) {
+            if (a != lastZapped) {
+                zapped += c
+                if (zapped.size == 200) {
+                    println (s"This is the 200th: $c")
+                }
+                lastZapped = a
+            }
+        }
+    })
+}
+
+// not 807
+// not 1405
+// not 313 (too low)
+// not 1806
+// not 718

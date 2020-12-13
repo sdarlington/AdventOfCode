@@ -123,3 +123,15 @@ for (i <- 0 until 1000) {
 }
 println(planets.calulateEnergy)
 
+println("Part 2")
+import scala.collection.mutable.Set
+val planets2 = new PlanetSystem(mutableIn)
+val oldPositions = Set[Seq[Position]]()
+var iter = 0
+while (!oldPositions.contains(planets2.positions())) {
+    oldPositions += planets2.positions()
+    planets2.step
+    iter += 1
+    if (iter % 1000000 == 0) { println (s"... $iter")}
+}
+println(iter)
