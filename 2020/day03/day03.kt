@@ -59,5 +59,19 @@ fun main() {
 
      // Part 1
     val map2 = Map("input.txt")
-     println (map2.run1())
+    println (map2.run1())
+
+    // Part 2
+    val slopes = listOf(
+         Pair(1,1),
+         Pair(3,1),
+         Pair(5,1),
+         Pair(7,1),
+         Pair(1,2)
+         )
+    val results = slopes.map { x -> map2.run1(x.first, x.second) }
+                        .map { x -> x.toLong() }
+                        .reduce { acc, v -> acc * v }
+
+    println(results)
 }
