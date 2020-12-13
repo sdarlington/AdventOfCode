@@ -3,39 +3,45 @@
 
 import java.io.File
 
-fun entriesThatSum(list: Set<Int>, sumTo: Int = 2020): Pair<Int,Int>  {
+fun entriesThatSum(list: Set<Int>, sumTo: Int = 2020): Set<Int> {
   for (entry in list) {
       val lookingFor = sumTo - entry
       val otherEntries = list.filter { x -> x == lookingFor }
       if (otherEntries.count() == 1) {
-          return Pair(entry,otherEntries.first())
+          return setOf(entry,otherEntries.first())
       }
   }
-  return Pair(0,0)
+  return setOf()
 }
 
 fun threeEntriesThatSum(list: Set<Int>, sumTo: Int = 2020): Set<Int> {
     for (entry in list) {
         val lookingFor = sumTo - entry
-        val (v1,v2) = entriesThatSum(list, lookingFor)
-        if (v1 != 0 && v2 != 0) {
-            return setOf(entry,v1,v2)
+        val entries = entriesThatSum(list, lookingFor)
+        if (entries.count() == 2) {
+            val returnEntries = entries.toMutableSet()
+            returnEntries.add(entry)
+            return returnEntries
         }
     }
-    return setOf(0,0,0)
+    return setOf()
+}
+
+fun setMul(list : Set<Int>) : Int {
+    return list.reduce { acc, v -> acc * v }
 }
 
 fun main() {
     // Part 1 : example
-    val (v1,v2) = entriesThatSum(setOf(1721,979,366,299,675,1456))
-    println (v1*v2)
+    val example = entriesThatSum(setOf(1721,979,366,299,675,1456))
+    println (setMul(example))
 
     // Part 1 : real
     val entries = File("input.txt").readLines().map { x -> x.toInt() }.toSet()
-    val (v3,v4) = entriesThatSum(entries)
-    println (v3*v4)
+    val part1 = entriesThatSum(entries)
+    println (setMul(part1))
 
     // Part 2
     val part2 = threeEntriesThatSum(entries)
-    println (part2.reduce { acc, v -> acc * v })
+    println (setMul(part2))
 }
