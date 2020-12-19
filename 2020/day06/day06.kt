@@ -29,6 +29,12 @@ class Declarations() {
                       .reduce { acc, v -> acc.union(v) }
                       .count()
     }
+
+    fun commonAnswers(answers : List<List<Char>>) : Int {
+        return answers.map { x -> x.toSet() }
+                      .reduce { acc, v -> acc.intersect(v) }
+                      .count()
+    }
 }
 
 fun main() {
@@ -44,4 +50,14 @@ fun main() {
     val step1Count = input.map { x -> decl.uniqueAnswers(x) }
                           .reduce { acc, v -> acc + v }
     println (step1Count)
+
+    println ("Part 2")
+    val sampleCount2 = sample.map { x -> decl.commonAnswers(x) }
+                             .reduce { acc, v -> acc + v }
+    println (sampleCount2)
+
+    val step2Count = input.map { x -> decl.commonAnswers(x) }
+                          .reduce { acc, v -> acc + v }
+    println (step2Count)
+
 }
