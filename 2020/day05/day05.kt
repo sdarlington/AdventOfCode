@@ -41,8 +41,8 @@ fun main() {
         seats.add(location.second)
         boarding[location.first] = seats
     }
-    val firstSeats = boarding.keys.min()
-    val lastSeats = boarding.keys.max()
+    val firstSeats = boarding.keys.minOrNull()
+    val lastSeats = boarding.keys.maxOrNull()
     boarding.remove(firstSeats)
     boarding.remove(lastSeats)
     val missing = boarding.filter { x -> x.value.count() < 8 }
