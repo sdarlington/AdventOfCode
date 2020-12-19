@@ -54,6 +54,15 @@ fun matchBagsFrom(start : Bag, rules : List<BagRule>) : List<Bag> {
     return matchingBags
 }
 
+fun countBags(start: Bag, rules: List<BagRule>) : Int {
+    val thisBag = rules.filter { x -> x.bag.matchingBag(start) }.first()
+
+    val subBags = thisBag.contains.map { x -> countBags(x, rules) }
+    val subCount = if (subBags.count() == 0) 0 else subBags.reduce { acc, v -> acc + v }
+
+    return start.count + start.count * subCount
+}
+
 // sample
 println ("Sample")
 val sampleRules = readRules("example.txt")
@@ -65,3 +74,10 @@ println ("Step 1")
 val inputRules = readRules("input.txt")
 val step1Match = matchBagsFrom(Bag(1,"shiny", "gold"), inputRules).toSet()
 println (step1Match.count())
+
+// Step 2
+println ("Step 2")
+val step2sample = countBags(Bag(1,"shiny", "gold"), sampleRules) - 1
+println (step2sample)
+val step2 = countBags(Bag(1,"shiny", "gold"), inputRules) - 1
+println (step2)
