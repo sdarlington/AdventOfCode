@@ -34,10 +34,11 @@ class Interpreter(val filename : String) {
         else {
             seen.add(pc)
         }
-        val instruction = code.getOrElse(pc) { OpCode("nop", 0) }
+        val instruction = code.getOrElse(pc) { OpCode("end", 0) }
         when (instruction.code) {
             "acc" -> acc += instruction.argument
             "jmp" -> pc += instruction.argument - 1
+            "end" -> end = true
             // else -> 
         }
         pc++
@@ -45,12 +46,39 @@ class Interpreter(val filename : String) {
         return end
     }
 
-    fun run() {
+    fun run() : Boolean {
+        pc = 0
+        acc = 0
+        seen.clear()
         var go = true
         while (go) {
             printCurrentLine()
             go = !execute()
         }
+        return (pc > code.count())
+    }
+
+    fun permutations() : Int {
+        val originalCode = code
+        val editableCode = code.toMutableList()
+        for (idx in (0..code.count()-1)) {
+            println ("Permutation $idx")
+            if (code[idx].code == "nop") {
+                editableCode[idx] = OpCode("jmp", code[idx].argument)
+            }
+            else if (code[idx].code == "jmp") {
+                editableCode[idx] = OpCode("nop", code[idx].argument)
+            }
+            else {
+                continue
+            }
+            code = editableCode
+            if (run()) {
+                return acc
+            }
+            editableCode[idx] = originalCode[idx]
+        }
+        return 0
     }
 }
 
@@ -64,3 +92,9 @@ println ("Part 1")
 val p1i = Interpreter("input.txt")
 p1i.readCode()
 p1i.run()
+
+// Part 2
+println ("Part 2 (sample)")
+si.permutations()
+println ("Part 2 (input)")
+p1i.permutations()
