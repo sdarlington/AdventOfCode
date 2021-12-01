@@ -21,21 +21,15 @@ puzzle = [ int(x) for x in f.readlines()]
 print("Part 1")
 print (part1(puzzle))
 
-def compareElements2(input):
-    elements = []
-    for current in input:
-        if len(elements) < 3:
-            elements.append(current)
-        else:
-            old = sum(elements)
-            elements.append(current)
-            del elements[0]
-            new = sum(elements)
-            yield old < new 
+def window(l,s):
+    for x in range(0, len(l) - s + 1):
+        yield l[x : s + x]
 
 def part2(list):
-    return len([ x for x in  compareElements2(list) if x is True])
+    windows = [ sum(x) for x in window(list,3) ]
+    return part1(windows)
 
 print("Part 2")
 print (part2(sample))
 print (part2(puzzle))
+
