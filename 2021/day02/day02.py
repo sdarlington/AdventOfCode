@@ -25,7 +25,7 @@ class Instruction(enum.Enum):
         command = { 'forward' : Instruction.Forward, 'up' : Instruction.Up, 'down' : Instruction.Down }[lex[0]]
         return (command, int(lex[1]))
 
-def nextLocation(location, instruction):
+def nextLocation1(location, instruction):
     command = {
         Instruction.Forward : lambda l,d: (l[0] + d, l[1]),
         Instruction.Up      : lambda l,d: (l[0], l[1] - d),
@@ -33,11 +33,14 @@ def nextLocation(location, instruction):
         }
     return command[instruction[0]](location, instruction[1])
 
-def part1(instructions):
-    location = (0,0)   
+def calculateLocation(start, instructions, nextLocation):
+    location = start  
     for i in instructions:
         location = nextLocation(location, Instruction.parse(i))
     return location
+
+def part1(instructions):
+    return calculateLocation((0,0), instructions, nextLocation1)
 
 print ("Part 1")
 location = part1(sample)
@@ -59,10 +62,7 @@ def nextLocation2(location, instruction):
     return command[instruction[0]](location, instruction[1])
 
 def part2(instructions):
-    location = (0,0,0)
-    for i in instructions:
-        location = nextLocation2(location, Instruction.parse(i))
-    return location
+    return calculateLocation((0,0,0), instructions, nextLocation2)
 
 location = part2(sample)
 print ("Sample ", location)
