@@ -47,3 +47,27 @@ print ("Sample ", location[0] * location[1])
 location = part1(puzzle)
 print ("Part 1 ", location)
 print ("Part 1 ", location[0] * location[1])
+
+print ("Part 2")
+
+def nextLocation2(location, instruction):
+    command = {
+        Instruction.Forward : lambda l,d: (l[0] + d, l[1] + l[2] * d, l[2]),
+        Instruction.Up      : lambda l,d: (l[0], l[1], l[2] - d),
+        Instruction.Down    : lambda l,d: (l[0], l[1], l[2] + d)
+        }
+    return command[instruction[0]](location, instruction[1])
+
+def part2(instructions):
+    location = (0,0,0)
+    for i in instructions:
+        location = nextLocation2(location, Instruction.parse(i))
+    return location
+
+location = part2(sample)
+print ("Sample ", location)
+print ("Sample ", location[0] * location[1])
+
+location = part2(puzzle)
+print ("Part 2 ", location)
+print ("Part 2 ", location[0] * location[1])
