@@ -50,3 +50,30 @@ def part1(list):
 
 print(part1(sample))
 print (part1(puzzle))
+
+# part 2
+
+print ("Part 2")
+
+def part2test(list, t):
+    for posn in range(0,len(list[0])):
+        if len(list) > 1:
+            ranges = [x for x in digitCount(list, posn)]
+            if t(ranges[0], ranges[1]):
+                filter = '0'
+            else:
+                filter = '1'
+            list = [x for x in list if x[posn] == filter]
+    return list[0]
+
+def oxygen(list):
+    return part2test(list, lambda x,y: x > y)
+
+def co2(list):
+    return part2test(list, lambda x,y: x <= y)
+
+def part2(list):
+    return int(oxygen(list),2) * int(co2(list),2)
+
+print (part2(sample))
+print (part2(puzzle))
