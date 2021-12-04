@@ -77,8 +77,22 @@ class Game:
                 (bingo,score) = b.bingo()
                 if bingo:
                     return (score,turn)
-        return (0,'')
-        
+        return (0,0)
+
+    def play2(self):
+        for turn in self.tiles:
+            newBoards = []
+            for b in self.boards:
+                b.addChecked(turn)
+                (bingo,score) = b.bingo()
+                if bingo:
+                    if len(self.boards) == 1:
+                        return (score,turn)
+                else:
+                    newBoards.append(b)
+            self.boards = newBoards
+        return (0,0)
+
     def calcResult(self,x):
         return x[0] * x[1]
         
@@ -92,4 +106,16 @@ print (s.calcResult(r))
 p = Game()
 p.parse(puzzle)
 r = p.play()
+print (p.calcResult(r))
+
+# part 2
+print ('\nPart 2')
+s = Game()
+s.parse(sample)
+r = s.play2()
+print (s.calcResult(r))
+
+p = Game()
+p.parse(puzzle)
+r = p.play2()
 print (p.calcResult(r))
