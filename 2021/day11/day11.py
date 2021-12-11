@@ -63,9 +63,23 @@ class OctoGrid:
             flashes = flashes + self.next_state()
         return flashes
 
+    def part2(self):
+        steps = 1
+        while self.next_state() != 100:
+            steps = steps + 1
+        return steps
+
 print('Part 1')
 octo_sample = OctoGrid(sample)
 print (octo_sample.part1())
 
 octo_puzzle = OctoGrid(puzzle)
 print (octo_puzzle.part1())
+
+print()
+print('Part 2')
+octo_sample = OctoGrid(sample)
+print (octo_sample.part2())
+
+octo_puzzle = OctoGrid(puzzle)
+print (octo_puzzle.part2())
