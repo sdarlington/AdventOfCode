@@ -40,14 +40,10 @@ class OctoGrid:
     def next_state(self):
         self.octo = [ [ y+1 for y in x]  for x in self.octo]
         flashes = []
-        # print (self.octo)
         while len([item for sublist in self.octo for item in sublist if item > 9]) != len(flashes):
-            # print ('flashes: ', len([item for sublist in self.octo for item in sublist if item > 9]))
-            # print ('count: ', len(flashes))
             for x in range(0,self.maxX()):
                 for y in range(0,self.maxY()):
                     if self.energy_level(x,y) > 9 and (x,y) not in flashes:
-                        # self.set_energy_level(x,y,0)
                         flashes.append((x,y))
                         for (x1,y1) in self.adjacent_coords(x,y):
                             self.set_energy_level(x1,y1,self.energy_level(x1,y1) + 1)
