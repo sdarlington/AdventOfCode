@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from functools import reduce
+from collections import Counter
 
 f = open("sample.txt","r")
 sample = [ x.replace('\n','') for x in f.readlines()]
@@ -53,9 +53,7 @@ class CaveMap:
 
     def part2(self):
         def check(cave,path):
-            counts = {}
-            for c in [x for x in path if x.lower() == x]:
-                counts[c] = 1 if c not in counts else counts[c] + 1
+            counts = Counter([x for x in path if x.lower() == x])
             doubles = len([x for x in counts if counts[x] == 2])
             return cave not in counts or (counts[cave] == 1 and doubles == 0)
         self.find_paths('start', check )
