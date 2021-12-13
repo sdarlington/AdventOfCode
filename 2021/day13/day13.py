@@ -69,6 +69,10 @@ class Paper:
         (dim,loc) = self.instructions[0]
         self.flip(dim,loc)
         return len(self.grid)
+    
+    def part2(self):
+        for (dim,loc) in self.instructions:
+            self.flip(dim,loc)
 
 print ('Part 1')
 sample_paper = Paper(sample)
@@ -76,3 +80,9 @@ print(sample_paper.part1())
 
 puzzle_paper = Paper(puzzle)
 print(puzzle_paper.part1())
+
+print ('Part 2')
+puzzle_paper = Paper(puzzle)
+puzzle_paper.part2()
+puzzle_paper.printGrid()
+
