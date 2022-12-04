@@ -9,8 +9,10 @@ not, it's:
 
 These are (some of) my attempts. Mostly unfinished. Sorry.
 
-2015 : Swift
-2019 : Scala
-2020 : Kotlin
-2021 : Python
-2022 : Ruby
+|Year|Language|
+|----|--------|
+|2015|Swift|
+|2019|Scala|
+|2020|Kotlin|
+|2021|Python|
+|2022|Ruby|
