@@ -19,57 +19,44 @@ def getMaxY(map)
   map.size
 end
 
+def score1(game, x, y, xs, ys)
+  visible = Set.new()
+
+  height = -1
+  while true do    
+    break if x < 0 or x == getMaxX(game) or y < 0 or y == getMaxY(game)
+    
+    tree = getTree(game,x,y)
+    if tree > height
+      visible << [x,y]
+      height = tree
+    end
+    
+    x = xs.call(x)
+    y = ys.call(y)
+
+  end
+  
+  visible
+end
+
+
 def part1(f)
   game = day8(f)
     
-  visible = Set.new()
-    
-  for r in (0...getMaxY(game)) do
-    height = -1
-    for c in (0...getMaxX(game)) do
-      newTree = getTree(game,c,r)
-      if newTree > height
-        visible << [c,r]
-        height = newTree
-      end
-    end
-  end
-
-  for c in (0...getMaxX(game)) do
-    height = -1
-    for r in (0...getMaxY(game)) do
-      newTree = getTree(game,c,r)
-      if newTree > height
-        visible << [c,r]
-        height = newTree
-      end
-    end
-  end
-
-  for r in (getMaxY(game)-1).downto(0) do
-    height = -1
-    for c in (getMaxX(game)-1).downto(0) do
-      newTree = getTree(game,c,r)
-      if newTree > height
-        visible << [c,r]
-        height = newTree
-      end
-    end
-  end
-
-  for c in (getMaxX(game)-1).downto(0) do
-    height = -1
-    for r in (getMaxY(game)-1).downto(0) do
-      newTree = getTree(game,c,r)
-      if newTree > height
-        visible << [c,r]
-        height = newTree
-      end
-    end
-  end
+  maxX = getMaxX(game) - 1
+  maxY = getMaxY(game) - 1
   
-  puts visible.size
-  
+  x1 = (0...getMaxY(game)).map { |y| score1(game, 0, y, lambda { |x| x + 1 }, lambda { |y| y }) }
+                          .reduce (Set.new) { |a,b| a.union(b) }
+  x2 = (0...getMaxY(game)).map { |y| score1(game, maxX, y, lambda { |x| x - 1 }, lambda { |y| y }) }
+                          .reduce (Set.new) { |a,b| a.union(b) }
+  x3 = (0...getMaxX(game)).map { |x| score1(game, x, 0, lambda { |x| x }, lambda { |y| y + 1 }) }
+                          .reduce (Set.new) { |a,b| a.union(b) }
+  x4 = (0...getMaxX(game)).map { |x| score1(game, x, maxY, lambda { |x| x }, lambda { |y| y - 1 }) }
+                          .reduce (Set.new) { |a,b| a.union(b) }
+  all = x1 | x2 | x3 | x4
+  puts all.size  
 end
 
 def score(grid, x, y, xs, ys)
