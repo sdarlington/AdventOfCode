@@ -40,12 +40,46 @@ end
 def part2(f)
   game = day10(f)
   
+  cycle = 0
+  x = 1
+  game.each do |op|
+    posn = cycle % 40
+    if posn == 0
+      puts
+    end
+    if op.instruction == 'noop'
+      if [x-1,x,x+1].include?(posn)
+        putc "#"
+      else
+        putc "."
+      end
+      cycle = cycle + 1
+    elsif op.instruction == 'addx'
+      if [x-1,x,x+1].include?(posn)
+        putc "#"
+      else
+        putc "."
+      end
+      posn = (cycle + 1) % 40
+      if posn == 0
+        puts
+      end
+      if [x-1,x,x+1].include?(posn)
+        putc "#"
+      else
+        putc "."
+      end
+      cycle = cycle + 2
+      x = x + op.operand
+    end
+  end
+    puts
 end
 
 puts "Part 1"
 part1("sample.txt")
 part1("input.txt")
 
-# puts "Part 2"
-# part2("sample.txt")
-# part2("input.txt")
+puts "Part 2"
+part2("sample.txt")
+part2("input.txt")
