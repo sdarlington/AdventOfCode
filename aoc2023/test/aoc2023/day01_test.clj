@@ -5,7 +5,7 @@
 
 (def sample-input (slurp (clojure.java.io/resource "day01-sample.txt")))
 (def sample-input2 (slurp (clojure.java.io/resource "day01-sample2.txt")))
-(def sample-calibration2 (day01/load-calibration sample-input2))
+(def sample-calibration (day01/load-calibration sample-input))
 
 (deftest test-part1
   (testing "Day 1 Part 1"
