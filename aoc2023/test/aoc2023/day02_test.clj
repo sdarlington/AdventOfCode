@@ -11,8 +11,8 @@
   )
 )
 
-;; (deftest test-part2
-;;   (testing "Day 2 Part 2"
-;;     (is (= 281 (day01/part2 sample-input)))
-;;   )
-;; )
+(deftest test-part2
+  (testing "Day 2 Part 2"
+    (is (= 2286 (day01/part2 sample-input)))
+  )
+)

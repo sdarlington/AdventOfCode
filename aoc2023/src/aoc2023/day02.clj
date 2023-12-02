@@ -64,8 +64,29 @@
     )
 )
 
+(defn string-max
+  ""
+  [a b]
+  (let [ap (load-string a) bp (load-string b)]
+      (str (max ap bp))
+  )
+)
+(defn power-cubes
+    ""
+    [input]
+    (->> input
+         (reduce (fn [x y] (merge-with string-max x y)))
+         (map (fn [x] (load-string (last x))))
+         (reduce *)
+    )
+)
+
 (defn part2
     "Advent of Code, Day 2, Part 2"
     [input]
-    input
+    (->> (parse-input input)
+         (map last)
+         (map power-cubes)
+         (reduce +)
+    )
 )

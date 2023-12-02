@@ -16,7 +16,7 @@
 	(let [games (slurp (clojure.java.io/resource "day02-input.txt"))]
 	    (println "Day 2")
 	    (println (aoc2023.day02/part1 games))
-	    ;; (println (aoc2023.day02/part2 games))
+	    (println (aoc2023.day02/part2 games))
 	)
 )
 
