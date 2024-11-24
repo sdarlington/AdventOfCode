@@ -1,6 +1,6 @@
 (ns aoc2023.core
   (:gen-class)
-  (:require [aoc2023.day01] [aoc2023.day02] [aoc2023.day04]))
+  (:require [aoc2023.day01] [aoc2023.day02] [aoc2023.day04] [aoc2023.day09]))
 
 (defn day01
 	[]
@@ -25,9 +25,17 @@
 	(let [input (slurp (clojure.java.io/resource "day04-input.txt"))]
 	    (println "Day 4")
 	    (println (aoc2023.day04/part1 input))
-	    ;; (println (aoc2023.day04/part2 input))
+	    (println (aoc2023.day04/part2 input))
 	)
 )
+
+(defn day09
+  []
+  (let [input (slurp (clojure.java.io/resource "day09-input.txt"))]
+    (println "Day 4")
+    (println (aoc2023.day09/part1 input))
+    ;; (println (aoc2023.day09/part2 input)))
+  ))
 
 (defn -main
   "I don't do a whole lot ... yet."
@@ -35,4 +43,5 @@
   (day01)
   (day02)
   (day04)
+  (day09)
 )

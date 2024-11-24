@@ -1,22 +1,40 @@
 
 import java.io.File
 
-enum class PassportField (val key: String) {
-    BIRTH_YEAR("byr"),
-    ISSUE_YEAR("iyr"),
-    EXPIRATION_YEAR("eyr"),
-    HEIGHT("hgt"),
-    HAIR_COLOR("hcl"),
-    EYE_COLOR("ecl"),
-    PASSPORT_ID("pid"),
-    COUNTRY_ID("cid")
+fun intRange(text : String, min : Int, max: Int) : Boolean {
+    val x = text.toInt()
+    return x >= min && x <=max
+}
+
+enum class PassportField (val key: String, val validation: (String) -> Boolean) {
+    BIRTH_YEAR("byr", { x -> intRange(x, 1920, 2002) }),
+    ISSUE_YEAR("iyr", { x -> intRange(x, 2010, 2020)}),
+    EXPIRATION_YEAR("eyr", { x -> intRange(x, 2020, 2030 )}),
+    HEIGHT("hgt", { x -> true }),
+    HAIR_COLOR("hcl", { x -> true }),
+    EYE_COLOR("ecl", { x -> true }),
+    PASSPORT_ID("pid", { x -> true }),
+    COUNTRY_ID("cid", { x -> true })
 }
 
 class Passport (val fields: Map<String,String>) {
     fun validate() : Boolean {
-        val req = setOf("byr","iyr","eyr","hgt","hcl","ecl","pid")
+        val req = PassportField.values().map { x -> x.key }.toSet()
         val cur = fields.keys.toSet()
         return cur.containsAll(req)
+    }
+
+    fun validate2() : Boolean {
+        val step1 = validate()
+
+        var step2 = true
+        for (f in fields) {
+            val field = PassportField.values().filter { x -> x.key == f.key }.first()
+            val valid = field.validation(f.value)
+            step2 = step2 && valid
+        }
+
+        return step1 && step2
     }
 
     override fun toString() : String {
@@ -62,4 +80,6 @@ fun main() {
   println(step1)
 
   // step 2
+  val example2Count = examples.map { x -> x.validate2() }
+  println(example2Count)
 }
