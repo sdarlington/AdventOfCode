@@ -17,3 +17,4 @@ These are (some of) my attempts. Mostly unfinished. Sorry.
 |2021|Python|
 |2022|Ruby|
 |2023|Clojure|
+|2024|Go|
