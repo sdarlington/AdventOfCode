@@ -63,3 +63,30 @@ func Part1(inputFilename string) int {
 	}
     return c
 }
+
+func Part2(inputFilename string) int {
+  cola, colb := parseInput(inputFilename)
+  
+  m := make(map[int]int)
+  for i := 0; i < len(colb); i++ {
+    value := colb[i]
+    v, ok := m[value]
+    if !ok {
+      m[value] = 1
+    } else {
+      m[value] = v + 1
+    }
+  }
+  
+  result := 0
+  
+  for i := 0; i < len(cola); i++ {
+    v, ok := m[cola[i]]
+    if ok {
+      result += v * cola[i]
+    }
+  }
+  
+  return result
+}
+
