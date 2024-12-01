@@ -2,12 +2,11 @@ package day01
 
 import (
 	"bufio"
-	"os"
 	"log"
-	"strconv"
+	"os"
 	"sort"
+	"strconv"
 	"strings"
-	"fmt"
 )
 
 func parseInput(filename string)(columna []int, columnb []int)  {
@@ -26,7 +25,7 @@ func parseInput(filename string)(columna []int, columnb []int)  {
     colaInt, err1 := strconv.Atoi(values[0])
     colbInt, err2 := strconv.Atoi(values[1])
     if (err1 != nil || err2 != nil) {
-        fmt.Println("Non-integer values?")
+        log.Fatal("Non-integer value ", values[0], values[1])
         continue
     }
     columna = append(columna, colaInt)
@@ -58,8 +57,7 @@ func Part2(inputFilename string) int {
   cola, colb := parseInput(inputFilename)
   
   m := make(map[int]int)
-  for i := 0; i < len(colb); i++ {
-    value := colb[i]
+  for _, value := range colb {
     v, ok := m[value]
     if !ok {
       m[value] = 1
@@ -70,8 +68,8 @@ func Part2(inputFilename string) int {
   
   result := 0
   
-  for i := 0; i < len(cola); i++ {
-    v, ok := m[cola[i]]
+  for i, e := range cola {
+    v, ok := m[e]
     if ok {
       result += v * cola[i]
     }
