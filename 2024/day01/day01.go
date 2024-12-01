@@ -36,32 +36,22 @@ func parseInput(filename string)(columna []int, columnb []int)  {
   sort.Ints(columna)
   sort.Ints(columnb)
 
-  return columna, columnb
+  return
 }
 
-func day1(inputFilename string) (result []int) {
-
+func Part1(inputFilename string) (result int) {
   cola, colb := parseInput(inputFilename)
 
-  result = cola[:]
+  result = 0
   for i := 0; i < len(cola); i++ {
       diff := cola[i] - colb[i]
       if diff < 0 {
         diff = -diff
       }
-      result[i] = diff
+      result += diff
   }
 
-  return result
-}
-
-func Part1(inputFilename string) int {
-    result := day1(inputFilename)
-    c := 0
-	for i := 0; i < len(result); i++ {
-	    c += result[i]
-	}
-    return c
+  return
 }
 
 func Part2(inputFilename string) int {
