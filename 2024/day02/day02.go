@@ -1,35 +1,22 @@
 package day02
 
 import (
-	"bufio"
-	"log"
-	"os"
+    "aoc2024/helper"
 	"strconv"
 	"strings"
 )
 
 func parseInput(filename string)(reports [][]int)  {
-  file, err := os.Open(filename)
-  if err != nil {
-  	log.Fatal(err)
-  }
-  defer file.Close()
-  
-  scanner := bufio.NewScanner(file)
- 
-  for scanner.Scan() {
-    each_line := scanner.Text()
-    
+  reports = helper.ParseInput(filename, func (each_line string) (reports []int) {
     report_line := strings.Fields(each_line)
-    var int_report []int
     for _,v := range report_line {
       val, err := strconv.Atoi(v)
       if err == nil {
-        int_report = append(int_report, val)
+        reports = append(reports, val)
       }
     }
-    reports = append(reports, int_report)
-  }
+    return
+  })
 
   return
 }
