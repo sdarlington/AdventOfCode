@@ -2,10 +2,8 @@ package day02
 
 import (
 	"bufio"
-// 	"fmt"
 	"log"
 	"os"
-// 	"slices"
 	"strconv"
 	"strings"
 )
@@ -36,10 +34,10 @@ func parseInput(filename string)(reports [][]int)  {
   return
 }
 
-func testRow(row []int, skip int) (result bool, i int) {
+func testRow(row []int, skip int) (result bool) {
   result = true
   inc := false
-  for i = 0; i < len(row) - 1; i++ {
+  for i := 0; i < len(row) - 1; i++ {
     var diff int
     if skip == -1 {    
       diff = row[i + 1] - row[i]
@@ -51,7 +49,7 @@ func testRow(row []int, skip int) (result bool, i int) {
       } else {
         i1 = i
         if i + 1 == skip {
-          i2 = i+ 2
+          i2 = i + 2
         } else {
           i2 = i + 1
         }
@@ -84,8 +82,7 @@ func Part1(inputFilename string) (result int) {
 
   result = 0
   for _,v := range reports {
-    r,_ := testRow(v, -1)
-    if r {
+    if testRow(v, -1) {
       result++
     }
   }
@@ -93,26 +90,15 @@ func Part1(inputFilename string) (result int) {
   return
 }
 
-func remove(slice []int, i int) []int {
-  copy(slice[i:], slice[i+1:])
-  return slice[:len(slice)-1]
-}
-
 func Part2(inputFilename string) (result int) {
   reports := parseInput(inputFilename)
 
   result = 0
   for _,v := range reports {
-    r,_ := testRow(v, -1)
-    if r {
-      result++
-    } else {
-      for d := 0; d < len(v); d++ {
-        r,_ = testRow(v, d)
-        if r {
-          result++
-          break
-        }
+    for d := -1; d < len(v); d++ {
+      if testRow(v, d) {
+        result++
+        break
       }
     }
   }
