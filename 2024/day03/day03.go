@@ -15,33 +15,10 @@ func parseInput(filename string) (code []string) {
 	return
 }
 
-func Part1(inputFilename string) (result int) {
+func day3(inputFilename string, regex string) (result int) {
 	lines := parseInput(inputFilename)
 
-	fullRegex := regexp.MustCompile("mul\\(\\d\\d?\\d?,\\d\\d?\\d?\\)")
-	mulRegex := regexp.MustCompile("\\d+")
-	for _, input := range lines {
-		mul := fullRegex.FindAllString(input, -1)
-		for _, command := range mul {
-			digits := mulRegex.FindAllString(command, -1)
-			sum := 1
-			for _, d := range digits {
-				val, err := strconv.Atoi(d)
-				if err == nil {
-					sum *= val
-				}
-			}
-			result += sum
-		}
-	}
-
-	return
-}
-
-func Part2(inputFilename string) (result int) {
-	lines := parseInput(inputFilename)
-
-	fullRegex := regexp.MustCompile("mul\\(\\d\\d?\\d?,\\d\\d?\\d?\\)|do\\(\\)|don't\\(\\)")
+	fullRegex := regexp.MustCompile(regex)
 	mulRegex := regexp.MustCompile("\\d+")
 	enabled := true
 	for _, input := range lines {
@@ -64,6 +41,18 @@ func Part2(inputFilename string) (result int) {
 			}
 		}
 	}
+
+	return
+}
+
+func Part1(inputFilename string) (result int) {
+    result = day3(inputFilename, "mul\\(\\d\\d?\\d?,\\d\\d?\\d?\\)")
+
+	return
+}
+
+func Part2(inputFilename string) (result int) {
+    result = day3(inputFilename, "mul\\(\\d\\d?\\d?,\\d\\d?\\d?\\)|do\\(\\)|don't\\(\\)")
 
 	return
 }
