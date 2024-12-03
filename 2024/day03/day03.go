@@ -46,13 +46,13 @@ func day3(inputFilename string, regex string) (result int) {
 }
 
 func Part1(inputFilename string) (result int) {
-    result = day3(inputFilename, "mul\\(\\d\\d?\\d?,\\d\\d?\\d?\\)")
+    result = day3(inputFilename, "mul\\(\\d{1,3},\\d{1,3}\\)")
 
 	return
 }
 
 func Part2(inputFilename string) (result int) {
-    result = day3(inputFilename, "mul\\(\\d\\d?\\d?,\\d\\d?\\d?\\)|do\\(\\)|don't\\(\\)")
+    result = day3(inputFilename, "mul\\(\\d{1,3},\\d{1,3}\\)|do\\(\\)|don't\\(\\)")
 
 	return
 }
