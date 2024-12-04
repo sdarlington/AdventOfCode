@@ -37,8 +37,6 @@ func parseInput(filename string) (output puzzle) {
 	return
 }
 
-
-
 func Part1(inputFilename string) (result int) {
   puzzle := parseInput(inputFilename)
 
@@ -59,6 +57,28 @@ func Part1(inputFilename string) (result int) {
   	    if w == "XMAS" {
   	      result++
   	    }
+  	  }
+  	}
+  }
+
+  return
+}
+
+func Part2(inputFilename string) (result int) {
+  puzzle := parseInput(inputFilename)
+
+  result = 0
+  for x := 1; x < puzzle.x - 1; x++ {
+  	for y := 1; y < puzzle.y - 1; y++ {
+  	  words := []string {
+  	     puzzle.word(x-1,y-1,1,1,3), //top left - bottom right
+  	     puzzle.word(x-1,y+1,1,-1,3), //bottom left - top right
+  	     puzzle.word(x+1,y+1,-1,-1,3), //bottom-right - top left
+  	     puzzle.word(x+1,y-1,-1,1,3), //top-right - bottom left
+  	     }
+  	  if (words[0] == "MAS" || words[2] == "MAS") &&
+  	     (words[1] == "MAS" || words[3] == "MAS") {
+  	     result++
   	  }
   	}
   }

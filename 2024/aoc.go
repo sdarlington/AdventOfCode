@@ -29,6 +29,6 @@ func main() {
 
   fmt.Println("Day 4")
   fmt.Println("Part 1: ", day04.Part1("day04/input.txt"))
-//   fmt.Println("Part 2: ", day04.Part2("day04/input.txt"))
+  fmt.Println("Part 2: ", day04.Part2("day04/input.txt"))
 
 }
