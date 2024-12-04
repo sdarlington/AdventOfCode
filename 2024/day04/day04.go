@@ -7,20 +7,17 @@ import (
 
 type puzzle struct {
 	Grid []string
-	x,y int
+	xMax,yMax int
 }
 
 func (p puzzle) word (x,y,dx,dy,l int) string {
 	var out strings.Builder
     for c := 0; c < l; c++ {
-        chr := string(p.Grid[y][x])
-    	out.WriteString( chr )
+        chr := []byte { p.Grid[y][x] }
+    	out.Write( chr )
     	x += dx
     	y += dy
-    	if x < 0 || x >= p.x {
-    	  break
-    	}
-    	if y < 0 || y >= p.y {
+    	if x < 0 || x >= p.xMax || y < 0 || y >= p.yMax {
     	  break
     	}
     }
@@ -41,8 +38,8 @@ func Part1(inputFilename string) (result int) {
   puzzle := parseInput(inputFilename)
 
   result = 0
-  for x := 0; x < puzzle.x; x++ {
-  	for y := 0; y < puzzle.y; y++ {
+  for x := 0; x < puzzle.xMax; x++ {
+  	for y := 0; y < puzzle.yMax; y++ {
   	  words := []string {
   	     puzzle.word(x,y,1,0,4), // right
   	     puzzle.word(x,y,-1,0,4), // left
@@ -68,8 +65,8 @@ func Part2(inputFilename string) (result int) {
   puzzle := parseInput(inputFilename)
 
   result = 0
-  for x := 1; x < puzzle.x - 1; x++ {
-  	for y := 1; y < puzzle.y - 1; y++ {
+  for x := 1; x < puzzle.xMax - 1; x++ {
+  	for y := 1; y < puzzle.yMax - 1; y++ {
   	  words := []string {
   	     puzzle.word(x-1,y-1,1,1,3), //top left - bottom right
   	     puzzle.word(x-1,y+1,1,-1,3), //bottom left - top right
