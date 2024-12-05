@@ -55,33 +55,30 @@ func parseInput(filename string) (pageRules Rules, pageUpdates [][]int) {
 	return
 }
 
-func Part1(inputFilename string) (result int) {
-  rules, updates := parseInput(inputFilename)
-
-  for _,u := range updates {
-    fail := false
-//     log.Println("***")
-//     log.Println("Input: ", u)
-    for i,p := range u {
+func checkOrdering(updates []int, rules Rules) (bool, int) {
+    for i,p := range updates {
         req := rules.findSecondFromFirst(p)
-//         log.Println ("In: ", p, "Req: ", req)
         for _,r := range req {
             for ix := 0; ix < len(updates); ix++ {
-                if ix < i && u[ix] == r {
-//                     log.Println("Fail ", ix, " ", u[ix])
-                    fail = true
-                    break
+                if ix < i && updates[ix] == r {
+                    return false, ix
                 }
             }
         }
     }
-    if !fail {
-//         log.Println(u, "C ", u[len(u)/2])
+    return true, 0
+}
+
+func Part1(inputFilename string) (result int) {
+  rules, updates := parseInput(inputFilename)
+
+  for _,u := range updates {
+    success,_ := checkOrdering(u, rules)
+    if success {
         result += u[len(u)/2]
-//     } else {
-//         log.Println(u, "F ", 0)
     }
   }
 
   return
 }
+
