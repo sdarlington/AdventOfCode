@@ -10,16 +10,11 @@ import (
 
 
 type Rules struct {
-    rules [][]int
+    ruleMap map[int][]int
 }
 
-func (r Rules) findSecondFromFirst(second int) (result []int) {
-  for _,e := range r.rules {
-    if e[0] == second {
-      result = append(result, e[1])
-    }
-  }
-  return
+func (r Rules) findSecondFromFirst(first int) (result []int) {
+  return r.ruleMap[first]
 }
 
 func parseInput(filename string) (pageRules Rules, pageUpdates [][]int) {
@@ -28,16 +23,22 @@ func parseInput(filename string) (pageRules Rules, pageUpdates [][]int) {
 	})
 
     updates := false
+    pageRules.ruleMap = make(map[int][]int)
     for _,line := range output {
         if line == "" {
             updates = true
         } else if !updates {
         	fields := strings.Split(line, "|")
         	if len(fields) == 2  {
-        	  val := make([]int, 2)
-        	  val[0],_ = strconv.Atoi(fields[0])
-        	  val[1],_ = strconv.Atoi(fields[1])
-        	  pageRules.rules = append(pageRules.rules, val)
+        	  k,_ := strconv.Atoi(fields[0])
+        	  v,_ := strconv.Atoi(fields[1])
+        	  r,o := pageRules.ruleMap[k]
+        	  if o {
+        	      r = append(r, v)
+        	      pageRules.ruleMap[k] = r
+        	  } else {
+        	      pageRules.ruleMap[k] = []int{v}
+        	  }
         	} else {
         	  log.Fatal("Wrong number of fields ", fields)
         	}
@@ -82,3 +83,25 @@ func Part1(inputFilename string) (result int) {
   return
 }
 
+func Part2(inputFilename string) (result int) {
+    rules, updates := parseInput(inputFilename)
+
+//     log.Println("Rules = ", rules)
+    for _,u := range updates {
+      first := true
+      for {
+	      success, errorIndex := checkOrdering(u, rules)
+	      if success && first {
+	        break
+	      } else if success && !first {
+//         	log.Println("U ", u, " i ", errorIndex)
+	      	result += u[len(u)/2]
+	        break
+	      }
+	      first = false
+	      u[errorIndex], u[errorIndex+1] = u[errorIndex+1], u[errorIndex]
+      }
+    }
+
+	return
+}
