@@ -47,36 +47,16 @@ func powInt(x, y int) int {
     return int(math.Pow(float64(x), float64(y)))
 }
 
-func (e equation)permutations() int {
+func (e equation)permutations(permutations int) int {
     ops := make([]int, len(e.input))
     count := 0
-    for i := 0; i < powInt(2, len(e.input)-1); i++ {
+    for i := 0; i < powInt(permutations, len(e.input)-1); i++ {
       // the first op is always add
       ops[0] = 0
       intermediate := i
       for d := 1; d < len(e.input); d++ {
-          ops[d] = intermediate & 1
-          intermediate /= 2
-      }
-      c := e.calculate(ops)
-      if c == e.answer {
-          count++
-          break
-      }
-    }
-    return count
-}
-
-func (e equation)permutations2() int {
-    ops := make([]int, len(e.input))
-    count := 0
-    for i := 0; i < powInt(3, len(e.input)-1); i++ {
-      // the first op is always add
-      ops[0] = 0
-      intermediate := i
-      for d := 1; d < len(e.input); d++ {
-          ops[d] = intermediate % 3
-          intermediate /= 3
+          ops[d] = intermediate % permutations
+          intermediate /= permutations
       }
       c := e.calculate(ops)
       if c == e.answer {
@@ -91,7 +71,7 @@ func Part1(inputFilename string) (result int) {
   output := parseInput(inputFilename)
 
   for _,eq := range output {
-      r := eq.permutations()
+      r := eq.permutations(2)
       if r > 0 {
          result += eq.answer
       }
@@ -104,7 +84,7 @@ func Part2(inputFilename string) (result int) {
   output := parseInput(inputFilename)
 
   for _,eq := range output {
-      r := eq.permutations2()
+      r := eq.permutations(3)
       if r > 0 {
          result += eq.answer
       }
