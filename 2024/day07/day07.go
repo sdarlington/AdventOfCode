@@ -5,7 +5,6 @@ import (
 	"math"
 	"strconv"
 	"strings"
-// 	"log"
 )
 
 type equation struct {
@@ -35,8 +34,10 @@ func (e equation)calculate(op []int) int {
     for i,v := range e.input {
         if op[i] == 0 {
             result += v
-        } else {
+        } else if op[i] == 1 {
             result *= v
+        } else {
+            result = v + result * powInt(10, int(1 + math.Log10(float64(v))))
         }
     }
     return result
@@ -49,24 +50,38 @@ func powInt(x, y int) int {
 func (e equation)permutations() int {
     ops := make([]int, len(e.input))
     count := 0
-//     log.Println("len ", len(e.input), " / ", powInt(2, len(e.input)-1))
     for i := 0; i < powInt(2, len(e.input)-1); i++ {
       // the first op is always add
-//       log.Println("i = ", i)
       ops[0] = 0
       intermediate := i
       for d := 1; d < len(e.input); d++ {
-//           log.Println("Int: " , intermediate)
           ops[d] = intermediate & 1
           intermediate /= 2
       }
-//       log.Println(ops)
       c := e.calculate(ops)
       if c == e.answer {
-//           log.Println("Yay")
           count++
-//       } else {
-//           log.Println("Boo!")
+          break
+      }
+    }
+    return count
+}
+
+func (e equation)permutations2() int {
+    ops := make([]int, len(e.input))
+    count := 0
+    for i := 0; i < powInt(3, len(e.input)-1); i++ {
+      // the first op is always add
+      ops[0] = 0
+      intermediate := i
+      for d := 1; d < len(e.input); d++ {
+          ops[d] = intermediate % 3
+          intermediate /= 3
+      }
+      c := e.calculate(ops)
+      if c == e.answer {
+          count++
+          break
       }
     }
     return count
@@ -75,10 +90,21 @@ func (e equation)permutations() int {
 func Part1(inputFilename string) (result int) {
   output := parseInput(inputFilename)
 
-//   log.Println(output)
   for _,eq := range output {
-//       log.Println("**")
       r := eq.permutations()
+      if r > 0 {
+         result += eq.answer
+      }
+  }
+
+  return
+}
+
+func Part2(inputFilename string) (result int) {
+  output := parseInput(inputFilename)
+
+  for _,eq := range output {
+      r := eq.permutations2()
       if r > 0 {
          result += eq.answer
       }
