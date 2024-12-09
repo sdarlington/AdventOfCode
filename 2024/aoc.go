@@ -10,6 +10,7 @@ import (
   "aoc2024/day06"
   "aoc2024/day07"
   "aoc2024/day08"
+  "aoc2024/day09"
 )
 
 func main() {
@@ -59,5 +60,11 @@ func main() {
   fmt.Println("Day 8")
   fmt.Println("Part 1: ", day08.Part1("day08/input.txt"))
   fmt.Println("Part 2: ", day08.Part2("day08/input.txt"))
+
+  fmt.Println("***")
+
+  fmt.Println("Day 9")
+  fmt.Println("Part 1: ", day09.Part1("day09/input.txt"))
+//   fmt.Println("Part 2: ", day09.Part2("day09/input.txt"))
 
 }
