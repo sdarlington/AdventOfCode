@@ -9,7 +9,7 @@ var sample = "sample.txt"
 
 func TestOp1(t *testing.T) {
 	cpu := cpu{0,0,9,[]int{2,6},0, []int{}}
-	cpu = next(cpu)
+	next(&cpu)
 	if cpu.b != 1 {
 		fmt.Println(cpu, " ", cpu.b)
 		t.Fail()
@@ -19,7 +19,7 @@ func TestOp1(t *testing.T) {
 func TestOp2(t *testing.T) {
 	cpu := cpu{10,0,0,[]int{5,0,5,1,5,4},0,[]int{}}
 	for i := 0; i < 3; i++ {
-		cpu = next(cpu)
+		next(&cpu)
 	}
 	out := genOutput(cpu)
 	if out != "0,1,2" {

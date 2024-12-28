@@ -36,32 +36,27 @@ func parseInput(filename string) (output cpu) {
 			continue
 		}
 		instr := parsed[0]
-		//log.Println(len(instr))
-		if len(instr) == 5 {
-			val,_ := strconv.Atoi(instr[3])
-			if instr[2] == "A" {
-				output.a = val
-			} else if instr[2] == "B" {
-				output.b = val
-			} else if instr[2] == "C" {
-				output.c = val
-			} else {
-				//log.Println("X", instr[4])
-				opcodes := strings.Split(instr[4], ",")
-				for _,v := range opcodes {
-					io,_ := strconv.Atoi(v)
-					output.program = append(output.program, io)
-				}
-				}
-		} else {
-			
+		val,_ := strconv.Atoi(instr[3])
+		switch instr[2] {
+		case "A":
+			output.a = val
+		case "B":
+			output.b = val
+		case "C":
+			output.c = val
+		default:
+			opcodes := strings.Split(instr[4], ",")
+			for _,v := range opcodes {
+				io,_ := strconv.Atoi(v)
+				output.program = append(output.program, io)
+			}
 		}
 	}
 
 	return
 }
 
-func combo(cpu cpu) int {
+func combo(cpu *cpu) int {
 	val := cpu.program[cpu.pc + 1]
 	switch val {
 	case 0,1,2,3:
@@ -81,7 +76,7 @@ func powInt(x,y int) int {
 	return int(math.Pow(float64(x), float64(y)))
 }
 
-func next(program cpu) cpu {
+func next(program *cpu) {
 	switch program.program[program.pc] {
 	case 0: //adv
 		program.a = program.a / powInt(2, combo(program))
@@ -103,8 +98,6 @@ func next(program cpu) cpu {
 		program.c = program.a / powInt(2, combo(program))
 	}
 	program.pc += 2
-
-	return program
 }
 
 func genOutput(cpu cpu) string {
@@ -121,16 +114,14 @@ func genOutput(cpu cpu) string {
 }
 
 func Part1(inputFilename string) (result string) {
-    cpu := parseInput(inputFilename)
-
+	cpu := parseInput(inputFilename)
 
 	for cpu.pc < len(cpu.program) {
-		cpu = next(cpu)
+		next(&cpu)
 	}
 
 	result = genOutput(cpu)
 	
-
-    return
+	return
 }
 
