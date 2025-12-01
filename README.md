@@ -18,3 +18,4 @@ These are (some of) my attempts. Mostly unfinished. Sorry.
 |2022|Ruby|
 |2023|Clojure|
 |2024|Go|
+|2025|Rust|
