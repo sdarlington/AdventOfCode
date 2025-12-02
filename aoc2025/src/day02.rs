@@ -33,18 +33,22 @@ fn test_range(range : Range) -> Vec<i64> {
   return invalid;
 }
 
-pub fn part1(filename : &str) -> i64 {
-    let operations = parse_input(filename);
-
+fn run_ops<F>(operations : Vec<Range>, test : F) -> i64 where F:Fn(Range) -> Vec<i64> {
     let mut result : i64 = 0;
     
     for o in operations {
-      for r in test_range(o) {
+      for r in test(o) {
         result += r;
       }
     }
-
+    
     return result;
+}
+
+pub fn part1(filename : &str) -> i64 {
+    let operations = parse_input(filename);
+
+    return run_ops(operations, test_range);
 }
 
 #[cfg(test)]
@@ -98,7 +102,6 @@ mod tests {
         assert_eq!(test_range2(Range { from: 1188511880, to: 1188511890}).len(), 1);
     }
 
-    
     #[test]
     fn test_part2() {
         let r = part2("sample-02.txt");
@@ -123,7 +126,6 @@ fn test_range2(range : Range) -> Vec<i64> {
           }
         }
     }
-    
   }
   return invalid;
 }
@@ -131,13 +133,5 @@ fn test_range2(range : Range) -> Vec<i64> {
 pub fn part2(filename : &str) -> i64 {
     let operations = parse_input(filename);
 
-    let mut result : i64 = 0;
-    
-    for o in operations {
-      for r in test_range2(o) {
-        result += r;
-      }
-    }
-
-    return result;
+    return run_ops(operations, test_range2);
 }
