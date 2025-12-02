@@ -77,15 +77,67 @@ mod tests {
         let r = part1("sample-02.txt");
         assert_eq!(r, 1227775554);
     }
+
+    #[test]
+    fn test_range_2_1() {
+        assert_eq!(test_range2(Range { from: 11, to: 22}).len(), 2);
+    }
+
+    #[test]
+    fn test_range_2_2() {
+        assert_eq!(test_range2(Range { from: 95, to: 115}).len(), 2);
+    }
+
+    #[test]
+    fn test_range_2_3() {
+        assert_eq!(test_range2(Range { from: 998, to: 1012}).len(), 2);
+    }
+
+    #[test]
+    fn test_range_2_4() {
+        assert_eq!(test_range2(Range { from: 1188511880, to: 1188511890}).len(), 1);
+    }
+
     
     #[test]
     fn test_part2() {
         let r = part2("sample-02.txt");
-        assert_eq!(r, -1);
+        assert_eq!(r, 4174379265);
     }
 
 }
 
-pub fn part2(_filename : &str) -> i64 {
-    return -1;
+fn test_range2(range : Range) -> Vec<i64> {
+  let mut invalid : Vec<i64> = Vec::new();
+  for n in range.from ..= range.to {
+    let ns = n.to_string();
+    
+    for m in 2 ..= ns.len() {
+        if ns.len() % m == 0 {
+          let split = ns.len() / m;
+          let (l,_r) = ns.split_at(split);
+          let rep = l.repeat(m);
+          if rep.eq(&ns) {
+              invalid.push(n);
+              break;
+          }
+        }
+    }
+    
+  }
+  return invalid;
+}
+
+pub fn part2(filename : &str) -> i64 {
+    let operations = parse_input(filename);
+
+    let mut result : i64 = 0;
+    
+    for o in operations {
+      for r in test_range2(o) {
+        result += r;
+      }
+    }
+
+    return result;
 }
