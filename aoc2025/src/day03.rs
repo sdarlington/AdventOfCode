@@ -51,13 +51,41 @@ mod tests {
     #[test]
     fn test_part2() {
         let r = part2("sample-03.txt");
-        assert_eq!(r, 6);
+        assert_eq!(r, 3121910778619);
     }
 
 }
 
-pub fn part2(filename : &str) -> i32 {
-    let _operations = parse_input(filename);
+pub fn part2(filename : &str) -> i64 {
+    let batteries = parse_input(filename);
+    
+    let mut total : i64 = 0;
+    for b in batteries {
+        let mut first_idx = 0;
+        let mut joltage : Vec<i64> = Vec::new();
         
-    return -1;
+        for d in 0 .. 12 {
+            let mut highest = b[first_idx];
+            for i in first_idx+1 .. b.len() - 12 + d + 1 {
+                if b[i] > highest {
+                  first_idx = i;
+                  highest = b[i];
+                }
+            }
+            first_idx +=1 ;
+            joltage.push(highest.into());
+        }
+
+        // FIXME: lots of yucky type casting... we can do better!
+        let mut multiplier : i64 = joltage.len().try_into().unwrap();
+        multiplier -= 1;
+        let mut jolts : i64 = 0;
+        for x in joltage {
+          jolts += x * 10_i64.pow(multiplier.try_into().unwrap());
+          multiplier -= 1;
+        }
+        total += jolts;
+    }
+
+    return total;
 }
