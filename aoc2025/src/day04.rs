@@ -12,7 +12,7 @@ impl PaperMap {
         return &self.map[y][x];
     }
     
-    fn adjacent(&self, x: usize, y : usize) -> i32 {
+    fn adjacent(&self, x: usize, y : usize, removed : &HashSet<(usize,usize)>) -> i32 {
         let mut result : i32 = 0;
         let min_x = if x == 0 { 0 } else { x - 1 };
         let min_y = if y == 0 { 0 } else { y - 1 };
@@ -25,6 +25,9 @@ impl PaperMap {
                     continue;
                 }
                 if test_y > self.map.len() - 1 {
+                    continue;
+                }
+                if removed.contains(&(test_x,test_y)) {
                     continue;
                 }
                 match self.get(test_x, test_y) {
@@ -56,7 +59,7 @@ pub fn part1(filename : &str) -> i32 {
                 Cell::Empty => continue,
                 Cell::Paper => ()
             }
-            if maps.adjacent(x, y) < 4 {
+            if maps.adjacent(x, y, &HashSet::new()) < 4 {
                 total += 1;
             }
         }
@@ -79,15 +82,44 @@ mod tests {
     #[test]
     fn test_part2() {
         let r = part2("sample-04.txt");
-        assert_eq!(r, -1);
+        assert_eq!(r, 43);
     }
 
 }
 
-pub fn part2(filename : &str) -> i64 {
-    let batteries = parse_input(filename);
+use std::collections::HashSet;
+
+pub fn part2(filename : &str) -> i32 {
+    let maps = parse_input(filename);
     
-    let mut total : i64 = 0;
+    let mut total : i32 = 0;
+    let mut again = true;
+    let mut removed : HashSet<(usize,usize)> = HashSet::new();
+    
+    while again {
+        let mut total_scan = 0;
+		for y in 0 .. maps.map.len() {
+			for x in 0 .. maps.map[0].len() {
+				match maps.get(x,y) {
+					Cell::Empty => continue,
+					Cell::Paper => ()
+				}
+				if removed.contains(&(x,y)) {
+				    continue;
+				}
+				if maps.adjacent(x, y, &removed) < 4 {
+					total_scan += 1;
+					removed.insert((x,y));
+				}
+			}
+		}
+		if total_scan == 0 {
+		    again = false;
+		}
+		else {
+		    total += total_scan;
+	    }
+    }
 
     return total;
 }
