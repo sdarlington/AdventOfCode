@@ -1,4 +1,5 @@
 
+#[derive(PartialEq)]
 enum Cell {
   Empty, Paper
 }
@@ -55,11 +56,7 @@ pub fn part1(filename : &str) -> i32 {
     let mut total : i32 = 0;
     for y in 0 .. maps.map.len() {
         for x in 0 .. maps.map[0].len() {
-            match maps.get(x,y) {
-                Cell::Empty => continue,
-                Cell::Paper => ()
-            }
-            if maps.adjacent(x, y, &HashSet::new()) < 4 {
+            if *maps.get(x,y) == Cell::Paper &&  maps.adjacent(x, y, &HashSet::new()) < 4 {
                 total += 1;
             }
         }
@@ -100,9 +97,8 @@ pub fn part2(filename : &str) -> i32 {
         let mut total_scan = 0;
 		for y in 0 .. maps.map.len() {
 			for x in 0 .. maps.map[0].len() {
-				match maps.get(x,y) {
-					Cell::Empty => continue,
-					Cell::Paper => ()
+				if *maps.get(x,y) == Cell::Empty {
+					continue;
 				}
 				if removed.contains(&(x,y)) {
 				    continue;
