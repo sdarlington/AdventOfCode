@@ -65,15 +65,33 @@ mod tests {
     #[test]
     fn test_part2() {
         let r = part2("sample-05.txt");
-        assert_eq!(r, 43);
+        assert_eq!(r, 14);
     }
 
 }
 
 pub fn part2(filename : &str) -> i64 {
-    let _maps = parse_input(filename);
+    let (mut ranges, _ingredients) = parse_input(filename);
     
-    let total : i64 = 0;
+    let mut total : i64 = 1;
+    ranges.sort_by_key(|x| x.from);
+    let mut last_to = ranges[0].from;
+    for r in ranges {
+        let mut count = r.to - r.from + 1 ;
+
+        // if the ranges overlap        
+        if last_to >= r.from {
+            count -= last_to - r.from + 1;
+        }
+        
+        // if there are no new numbers to count
+        if count > 0 {
+            total += count;
+        }
+        if r.to > last_to {
+            last_to = r.to;
+        }
+    }
 
     return total;
 }
