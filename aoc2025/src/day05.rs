@@ -24,12 +24,10 @@ fn parse_input(filename : &str) -> (Vec<Range>, Vec<i64>) {
         Some(e) => ParseInput::Range(first.parse::<i64>().unwrap(), e.parse::<i64>().unwrap()),
         };
     }).unwrap();
-    
-    let range = cols.iter().map(|x| match x { ParseInput::Range(a,b) => Range{from:*a, to: *b}, _ => Range {from:-1, to: 0} })
-                           .filter(|x| x.from != -1)
+
+    let range = cols.iter().filter_map(|x| match x { ParseInput::Range(a,b) => Some(Range{from:*a, to: *b}), _ => None })
                            .collect();
-    let ingredients = cols.iter().map(|x| match x { ParseInput::Ingredient(a) => *a, _ => -1 })
-                           .filter(|x| *x != -1)
+    let ingredients = cols.iter().filter_map(|x| match x { ParseInput::Ingredient(a) => Some(*a), _ => None })
                            .collect();
 
     return (range, ingredients);
