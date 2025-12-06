@@ -1,8 +1,10 @@
 
 #[derive(PartialEq)]
+#[derive(Debug)]
 enum ParseInput {
   Add,
   Multiply,
+  Blank,
   Number (i64)
 }
 
@@ -61,15 +63,54 @@ mod tests {
     #[test]
     fn test_part2() {
         let r = part2("sample-06.txt");
-        assert_eq!(r, 14);
+        assert_eq!(r, 3263827);
     }
 
 }
 
-pub fn part2(filename : &str) -> i64 {
-    let input = parse_input(filename);
+fn parse_input2(filename : &str) -> Vec<Vec<ParseInput>> {
+    let cols = crate::helper::parse_input(filename, |line| {
+        return line.chars().enumerate()
+                   .map(|x| match x {
+                     (_s,'+') => ParseInput::Add,
+                     (_s,'*') => ParseInput::Multiply,
+                     (_s,' ') => ParseInput::Blank,
+                     (_s,x) => ParseInput::Number(x.to_string().parse::<i64>().unwrap())
+                   })
+                   .collect();
+    }).unwrap();
     
-    let mut total : i64 = 1;
+    return cols;
+}
+
+pub fn part2(filename : &str) -> i64 {
+    let input = parse_input2(filename);
+    
+    let mut total : i64 = 0;
+    let mut numbers : Vec<i64> = Vec::new();
+    let mut operation : Option<ParseInput> = None;
+    for col in (0 .. input[0].len()).rev() {
+        let mut num : i64 = 0;
+        for y in &input {
+            match y[col] {
+                ParseInput::Number(x) => num = num * 10 + x,
+                ParseInput::Blank => (),
+                ParseInput::Add => operation = Some(ParseInput::Add),
+                ParseInput::Multiply => operation = Some(ParseInput::Multiply)
+            }
+        }
+        if num > 0 {
+            numbers.push(num);
+        }
+        match &operation {
+            Some(op) => match op {
+                ParseInput::Add => {total += numbers.clone().into_iter().reduce(|x,y| x + y).unwrap(); operation = None; numbers.clear(); },
+                ParseInput::Multiply => {total += numbers.clone().into_iter().reduce(|x,y| x * y).unwrap(); operation = None; numbers.clear(); },
+                _ => {}
+            },
+            None => {}
+        }
+    }
 
     return total;
 }
